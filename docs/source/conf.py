@@ -15,16 +15,17 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
+from recommonmark.parser import CommonMarkParser
 
 
 # -- Project information -----------------------------------------------------
 
 project = u'KSConf'
-copyright = u'2018, Lowell Alleman'
+copyright = u'2018, Kintyre Solutions, Inc.'
 author = u'Lowell Alleman'
 
 # The short X.Y version
-version = u''
+version = u'0.4'
 # The full version, including alpha/beta/rc tags
 release = u'0.4.3'
 
@@ -42,13 +43,19 @@ extensions = [
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['.templates']
+templates_path = ['_templates']
+
+
+source_parsers = {
+    '.md' :  CommonMarkParser,
+}
+
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ['.rst', '.md']
 
 # The master toctree document.
 master_doc = 'index'
@@ -85,7 +92,7 @@ html_theme = 'alabaster'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['.static']
+html_static_path = ['_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.

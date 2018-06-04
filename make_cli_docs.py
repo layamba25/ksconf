@@ -46,31 +46,10 @@ def write_doc_for(stream, cmd, level=2, cmd_name=None, *subcmds):
         write_doc_for(stream, cmd, level + 1, cmd_name, *sc)
 
 
-readme = open("README.md.tmp", "w")
+readme_file = os.path.join("docs", "source", "cli.md")
+readme_file_tmp = readme_file + ".tmp"
+readme = open(readme_file_tmp, "w")
 readme.write("""\
-# Kintyre's Splunk CONFiguration tool
-
-[![Travis](https://img.shields.io/travis/Kintyre/ksconf.svg)](https://travis-ci.org/Kintyre/ksconf/builds)
-[![codecov](https://codecov.io/gh/Kintyre/ksconf/branch/master/graph/badge.svg)](https://codecov.io/gh/Kintyre/ksconf)
-[![Coverage Status](https://coveralls.io/repos/github/Kintyre/ksconf/badge.svg?branch=master)](https://coveralls.io/github/Kintyre/ksconf?branch=master)
-[![Windows Build status](https://ci.appveyor.com/api/projects/status/rlbgstkpf17y8nxh?svg=true)](https://ci.appveyor.com/project/lowell80/ksconf)
-
-This utility handles a number of common Splunk app maintenance tasks in an installable python
-package.  Specifically, this tools deals with many of the nuances with storing Splunk apps in a
-version control system like git and pointing live Splunk apps to a working tree, merging changes
-from the live system's (local) folder to the version controlled (default) folder, and dealing with
-more than one layer of "default" (which splunk can't handle natively).
-
-
-Install with
-
-    pip install KintyreSplunkConfTool
-
-Confirm installation with the following command:
-
-    ksconf --help
-
-
 # Command line reference
 
 The following documents the CLI options
@@ -82,16 +61,16 @@ write_doc_for(readme, ["-m", "ksconf.cli"], cmd_name="ksconf")
 
 readme.close()
 
-if not os.path.isfile("README.md"):
-    print "Make fresh README.md"
-    os.rename("README.md.tmp", "README.md")
+if not os.path.isfile(readme_file):
+    print "Make fresh {}".format(readme_file)
+    os.rename(readme_file_tmp, readme_file)
     sys.exit(1)
-if filecmp.cmp("README.md.tmp", "README.md"):
+if filecmp.cmp(readme_file_tmp, readme_file):
     print "No changes made to file."
-    os.unlink("README.md.tmp")
+    os.unlink(readme_file_tmp)
     sys.exit(0)
 else:
-    print "README.md updated"
-    os.unlink("README.md")
-    os.rename("README.md.tmp", "README.md")
+    print "{} updated".format(readme_file)
+    os.unlink(readme_file)
+    os.rename(readme_file_tmp, readme_file)
     sys.exit(1)
