@@ -79,6 +79,7 @@ setup(name="kintyre-splunk-conf",
       # Not required, but useful.
       # install_requires=[ "argcomplete "],
       extras_require = {
+        "six",
         "bash" : [ "argcomplete" ],
       },
       entry_points={
