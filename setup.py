@@ -76,10 +76,9 @@ setup(name="kintyre-splunk-conf",
           "ksconf.util",
           "ksconf.vc",
       ],
+      install_requires=[ "six" ],
       # Not required, but useful.
-      # install_requires=[ "argcomplete "],
       extras_require = {
-        "six",
         "bash" : [ "argcomplete" ],
       },
       entry_points={
