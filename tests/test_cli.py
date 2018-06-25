@@ -572,7 +572,7 @@ class CliSortTest(unittest.TestCase):
         with ksconf_cli:
             ko = ksconf_cli("sort", "-i", self.conf_bogus)
             self.assertEqual(ko.returncode, EXIT_CODE_SORT_APPLIED)
-            self.assertRegexpMatches(ko.stderr, "^Replaced file")
+            self.assertRegexpMatches(ko.stderr, "^\s*Replaced file")
         # Sort the second time, no there should be NO updates
         with ksconf_cli:
             ko = ksconf_cli("sort", "--inplace", self.conf_bogus)

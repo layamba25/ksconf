@@ -16,7 +16,7 @@ def do_sort(args):
         for conf in args.conf:
             try:
                 # KISS:  Look for the KSCONF-NO-SORT string in the first 4k of this file.
-                if not args.force and "KSCONF-NO-SORT" in open(conf.name).read(4096):
+                if not args.force and b"KSCONF-NO-SORT" in open(conf.name, "rb").read(4096):
                     if not args.quiet:
                         sys.stderr.write("Skipping blacklisted file {}\n".format(conf.name))
                     continue
