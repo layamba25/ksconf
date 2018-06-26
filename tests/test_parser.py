@@ -12,7 +12,7 @@ from textwrap import dedent
 from ksconf.conf.delta import compare_cfgs, summarize_cfg_diffs, \
     DIFF_OP_REPLACE, DIFF_OP_EQUAL, DIFF_OP_DELETE, DIFF_OP_INSERT
 from ksconf.conf.merge import merge_conf_dicts
-from ksconf.conf.parser import _parse_conf, DUP_EXCEPTION, DUP_MERGE, DUP_OVERWRITE, \
+from ksconf.conf.parser import parse_conf_stream, DUP_EXCEPTION, DUP_MERGE, DUP_OVERWRITE, \
     DuplicateStanzaException, DuplicateKeyException, parse_conf, write_conf, ConfParserException, \
     PARSECONF_MID, GLOBAL_STANZA
 from ksconf.util.file import relwalk
@@ -21,14 +21,11 @@ import six
 
 def parse_string(text, profile=None, **kwargs):
     text = dedent(text)
-    if isinstance(text, bytes):
-        f = BytesIO(text)
-    else:
-        f = StringIO(text)
+    f = StringIO(text)
     if profile:
         return parse_conf(f, profile)
     else:
-        return _parse_conf(f, **kwargs)
+        return parse_conf_stream(f, **kwargs)
 
 
 

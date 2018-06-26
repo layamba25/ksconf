@@ -151,18 +151,20 @@ def splitup_kvpairs(lines, comments_re=re.compile(r"^\s*[#;]"), keep_comments=Fa
             raise ConfParserException("Unexpected entry:  {0}".format(entry))
 
 
-def parse_conf(stream, profile=PARSECONF_MID):
+def parse_conf(stream, profile=PARSECONF_MID, encoding=None):
     # Placeholder stub for an eventual migration to proper class-oriented parser
-    return _parse_conf(stream, **profile)
-
-
-def _parse_conf(stream, keys_lower=False, handle_conts=True, keep_comments=False,
-                dup_stanza=DUP_EXCEPTION, dup_key=DUP_OVERWRITE, strict=False, encoding=None):
-    if not hasattr(stream, "read"):
+    if hasattr(stream, "read"):
+        return parse_conf_stream(stream, **profile)
+    else:
         # Assume it's a filename
         if not encoding:
             encoding = detect_by_bom(stream, default_encoding)
-        stream = open(stream, encoding=encoding)
+        with open(stream, encoding=encoding) as stream:
+            return parse_conf_stream(stream, **profile)
+
+
+def parse_conf_stream(stream, keys_lower=False, handle_conts=True, keep_comments=False,
+                dup_stanza=DUP_EXCEPTION, dup_key=DUP_OVERWRITE, strict=False):
     if hasattr(stream, "name"):
         stream_name = stream.name
     else:
@@ -212,11 +214,16 @@ def _parse_conf(stream, keys_lower=False, handle_conts=True, keep_comments=False
     return sections
 
 
-
 def write_conf(stream, conf, stanza_delim="\n", sort=True):
     if not hasattr(stream, "write"):
         # Assume it's a filename
-        stream = open(stream, "w", encoding=default_encoding)
+        with open(stream, "w", encoding=default_encoding) as stream:
+            write_conf_stream(stream, conf, stanza_delim, sort)
+    else:
+        write_conf_stream(stream, conf, stanza_delim, sort)
+
+
+def write_conf_stream(stream, conf, stanza_delim="\n", sort=True):
     conf = dict(conf)
 
     if sort:
@@ -252,7 +259,7 @@ def write_conf(stream, conf, stanza_delim="\n", sort=True):
 def smart_write_conf(filename, conf, stanza_delim="\n", sort=True, temp_suffix=".tmp"):
     if os.path.isfile(filename):
         temp = StringIO()
-        write_conf(temp, conf, stanza_delim, sort)
+        write_conf_stream(temp, conf, stanza_delim, sort)
         with open(filename, encoding=default_encoding) as dest:
             file_diff = fileobj_compare(temp, dest)
         if file_diff:
@@ -267,7 +274,7 @@ def smart_write_conf(filename, conf, stanza_delim="\n", sort=True, temp_suffix="
     else:
         tempfile = filename + temp_suffix
         with open(tempfile, "w", encoding=default_encoding) as dest:
-            write_conf(dest, conf, stanza_delim, sort)
+            write_conf_stream(dest, conf, stanza_delim, sort)
         os.rename(tempfile, filename)
         return SMART_CREATE
 
